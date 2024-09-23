@@ -49,3 +49,4 @@ jobs:
           echo "Container is stopped, restarting..."
           docker start healing-container
           echo "Container restarted"
+        fi
