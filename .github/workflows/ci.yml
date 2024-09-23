@@ -1,0 +1,26 @@
+name: Run python Application
+
+on:   
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v1
+
+      - name: Build Docker image
+        run: docker build . -t self-healing-app
+
+      - name: Run container
+        run: |
+          docker run -d --name self-healing-app -p 5000:5000 self-healing-app
