@@ -23,7 +23,6 @@ jobs:
 
     # Step 3: Run the container if it doesn't exist
     - name: Run Docker Container
-      if: failure()
       run: |
         docker run -d --name healing-container -p 5000:5000 self-healing-app
         echo "New container created and started"
