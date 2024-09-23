@@ -6,6 +6,61 @@ on:
     - cron: '*/1 * * * *'  # Runs every 1 minute
 
 jobs:
+  start-container:
+    runs-on: ubuntu-latest
+    steps:
+
+    # Step 1: Check if the container exists
+    - name: Check if Container Exists
+      id: check_container
+      run: |
+        if [ "$(docker ps -a --filter 'name=healing-container' --format '{{.Names}}')" ]; then
+          echo "Container exists"
+        else
+          echo "Container does not exist"
+          exit 1
+        fi
+
+    # Step 2: Start the container if it exists and is not running
+    - name: Start Container
+      if: success()
+      run: |
+        if [ "$(docker ps --filter 'name=healing-container' --format '{{.Names}}')" ]; then
+          echo "Container is already running"
+        else
+          docker start healing-container
+          echo "Container started"
+        fi
+
+  start-container:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # Step 1: Check if the container exists
+    - name: Check if Container Exists
+      id: check_container
+      run: |
+        if [ "$(docker ps -a --filter 'name=healing-container' --format '{{.Names}}')" ]; then
+          echo "Container exists"
+        else
+          echo "Container does not exist"
+          exit 1
+        fi
+
+    # Step 2: Start the container if it exists and is not running
+    - name: Start Container
+      if: success()
+      run: |
+        if [ "$(docker ps --filter 'name=healing-container' --format '{{.Names}}')" ]; then
+          echo "Container is already running"
+        else
+          docker start healing-container
+          echo "Container started"
+        fi
+
   check-and-start-container:
     runs-on: ubuntu-latest
 
