@@ -18,10 +18,11 @@ jobs:
     - name: Check if Container Exists
       id: check_container
       run: |
-        container_status=$(docker inspect -f '{{.State.Status}}' healing-container)
+        container_status=$(docker inspect -f '{{.State.Status}}' self-healing-app)
+        echo $container_status
         if ["$container_status" != "running"]; then
           echo "Container is down, restarting..."
-          docker start healing-container
+          docker start self-healing-app
         else
           echo "Container is running fine"
           exit 1
