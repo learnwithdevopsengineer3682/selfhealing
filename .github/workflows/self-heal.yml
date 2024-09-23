@@ -10,28 +10,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    # Checkout the repository
-    - name: Checkout Code
-      uses: actions/checkout@v3
+    # # Checkout the repository
+    # - name: Checkout Code
+    #   uses: actions/checkout@v3
 
     # Step 2: Check if the container exists
     - name: Check if Container Exists
       id: check_container
       run: |
-        if [ "$(docker ps -a --filter 'name=self-healing-app' --format '{{.Names}}')" ]; then
-          echo "Container exists"
+        container_status=$(docker inspect -f '{{.State.Status}}' healing-container)
+        if ["$container_status" != "running"]; then
+          echo "Container is down, restarting..."
+          docker start healing-container
         else
-          echo "Container does not exist"
+          echo "Container is running fine"
           exit 1
         fi
 
-    # Step 3: Start the container if it exists but is stopped
-    - name: Start Existing Container
-      if: success()  # Only runs if the container exists
-      run: |
-        if [ "$(docker ps --filter 'name=self-healing-app' --format '{{.Names}}')" ]; then
-          echo "Container is already running"
-        else
-          docker start <container-name>
-          echo "Container started"
-        fi
